@@ -1,0 +1,28 @@
+name: build-on-push
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/js/**"
+
+jobs:
+  build:
+    name: Fake Build
+    runs-on: ubuntu-latest
+    env:
+      tags: >-
+        ${{ github.ref == format('refs/heads/{0}', 'main') && 'latest' || '' }}
+        ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '' }}
+        ${{ github.event_name == 'push' && github.ref_name == 'main' && format('main-{0}', github.event.head_commit.id) || '' }}
+        ${{ github.event_name == 'push' && github.ref_name || '' }}
+      release: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Echo vars
+        run: |
+          echo "tags: $tags"
+          echo "is release? $release"
