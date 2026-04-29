@@ -1,7 +1,9 @@
-name: build-on-push
+name: build-on-push-and-tags
 
 on:
   push:
+    tags:
+      - 'v*.*.*'
     branches:
       - main
     paths:
@@ -9,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Fake Build (on push to main only)
+    name: Fake Build (on push and tags)
     runs-on: ubuntu-latest
     env:
       tags: >-
